@@ -4,6 +4,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+
 def fetch_google_news(query: str, limit: int = 5):
     q = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={q}&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
@@ -19,6 +20,7 @@ def fetch_google_news(query: str, limit: int = 5):
         pub_date = item.findtext("pubDate", default="").strip()
         items.append({"title": title, "link": link, "pub_date": pub_date})
     return items
+
 
 def main():
     symbols = os.getenv("STOCKS", "300059").split(",")
@@ -49,30 +51,6 @@ def main():
 
     print("Report generated: daily_report.txt")
 
-if __name__ == "__main__":
-    main()import json
-from datetime import datetime
-
-def main():
-    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-    report = {
-        "timestamp": now,
-        "status": "success",
-        "message": "Daily task executed successfully."
-    }
-
-    text = (
-        f"Daily task report\n"
-        f"Time: {report['timestamp']}\n"
-        f"Status: {report['status']}\n"
-        f"Message: {report['message']}\n"
-    )
-
-    with open("daily_report.txt", "w", encoding="utf-8") as f:
-        f.write(text)
-
-    print(json.dumps(report, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
     main()
-  
