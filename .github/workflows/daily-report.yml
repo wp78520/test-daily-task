@@ -31,13 +31,14 @@ jobs:
       - name: Send email
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.gmail.com
+          server_address: smtp.qq.com
           server_port: 465
+          secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Daily Task Report
           to: ${{ secrets.EMAIL_TO }}
-          from: GitHub Actions
+          from: ${{ secrets.EMAIL_USERNAME }}
           body: |
             Daily task execution result:
 
