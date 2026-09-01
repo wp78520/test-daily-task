@@ -2,12 +2,15 @@ name: Daily Report
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # 每天 UTC 09:00 触发
-  workflow_dispatch:      # 允许手动执行
+    - cron: '0 0 * * *'   # UTC 00:00 = 北京时间 08:00
+  workflow_dispatch:
 
 jobs:
   run-task:
     runs-on: ubuntu-latest
+    env:
+      STOCKS: "300059"
+      NEWS_PER_STOCK: "5"
 
     steps:
       - name: Checkout repository
@@ -36,12 +39,10 @@ jobs:
           secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: Daily Task Report
+          subject: Daily Stock News Report
           to: ${{ secrets.EMAIL_TO }}
           from: ${{ secrets.EMAIL_USERNAME }}
           body: |
-            Daily task execution result:
+            Daily stock news report:
 
             ${{ env.REPORT }}
-
-            Triggered by: GitHub Actions
