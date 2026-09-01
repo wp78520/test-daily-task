@@ -1,0 +1,46 @@
+name: Daily Report
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 每天 UTC 09:00 触发
+  workflow_dispatch:      # 允许手动执行
+
+jobs:
+  run-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run daily task
+        run: |
+          python scripts/daily_task.py
+
+      - name: Load report into env
+        run: |
+          echo "REPORT<<EOF" >> $GITHUB_ENV
+          cat daily_report.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Send email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Daily Task Report
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+          body: |
+            Daily task execution result:
+
+            ${{ env.REPORT }}
+
+            Triggered by: GitHub Actions
